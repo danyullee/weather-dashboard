@@ -1,0 +1,5 @@
+.env
+.env.local
+.env*.local
+VITE_WEATHER_API_KEY=cadd19d52a0d72cc012d7f22ed936532
+node_modules
