@@ -1,0 +1,46 @@
+/* src/index.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Arial', sans-serif; /* Default font */
+    background: #f5f5f5; /* Light gray background */
+  }
+  #root {
+    min-height: 100vh; /* Full viewport height */
+    display: flex;
+    flex-direction: column;
+  }
+  /* Weather card styling */
+.weather-card {
+    background: blue;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Search bar */
+  .search-bar {
+    margin: 2rem auto;
+    max-width: 400px;
+  }
+  
+  /* Error message */
+  .error {
+    color: red;
+    text-align: center;
+  }
+  @media (max-width: 768px) {
+    .weather-card {
+      padding: 1rem;
+    }
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+  }
