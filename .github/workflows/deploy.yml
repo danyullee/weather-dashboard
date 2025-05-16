@@ -1,19 +1,34 @@
-name: Deploy to GitHub Pages
+name: Deploy Weather Dashboard
 
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  deploy:
+  test-build-deploy:
     runs-on: ubuntu-latest
     steps:
+      # 1. Checkout code
       - uses: actions/checkout@v4
+
+      # 2. Set up Node.js
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+
+      # 3. Install dependencies
       - run: npm install
+
+      # 4. Run tests (if you have them)
+      - run: npm test
+
+      # 5. Build production app
       - run: npm run build
+      
+      # 6. Deploy to GitHub Pages
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
