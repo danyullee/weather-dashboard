@@ -1,34 +1,43 @@
-name: Deploy Weather Dashboard
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   pull_request:
-    branches: [ "main" ]
+    branches: [main]
 
 jobs:
-  test-build-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout code
       - uses: actions/checkout@v4
-
-      # 2. Set up Node.js
+      
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
-      # 3. Install dependencies
       - run: npm install
-
-      # 4. Run tests (if you have them)
-      - run: npm test
-
-      # 5. Build production app
       - run: npm run build
-      
-      # 6. Deploy to GitHub Pages
+
+      # Conditional test running
+      - name: Check for tests
+        id: check-tests
+        run: |
+          if grep -q '"test":' package.json; then
+            echo "has_tests=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run tests
+        if: steps.check-tests.outputs.has_tests == 'true'
+        run: npm test
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
