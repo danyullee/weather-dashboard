@@ -1,34 +1,45 @@
 import React from 'react';
 import WeatherCard from "./components/WeatherCard";
 import SearchBar from "./components/SearchBar";
+import ForecastGraph from './components/ForecastGraph';
 import "./index.css";
 
 function App() {
   const [weather, setWeather] = React.useState(null);
+  const [forecast, setForecast] = React.useState(null);
 
-  // Add this function to handle the search
   const handleSearch = async (city) => {
     try {
       const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
-      const response = await fetch(
+      
+      // Fetch current weather
+      const currentResponse = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
       );
-      const data = await response.json();
-      if (data.cod === 200) {
-        setWeather(data);
+      const currentData = await currentResponse.json();
+      
+      // Fetch 5-day forecast (3-hour intervals)
+      const forecastResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`
+      );
+      const forecastData = await forecastResponse.json();
+
+      if (currentData.cod === 200 && forecastData.cod === "200") {
+        setWeather(currentData);
+        setForecast(forecastData);
       } else {
-        console.error("City not found:", data.message);
+        console.error("Error:", currentData.message || forecastData.message);
       }
     } catch (error) {
-      console.error("Error fetching weather:", error);
+      console.error("API Error:", error);
     }
   };
 
   return (
     <div className="app">
-      {/* Pass the handleSearch function as a prop */}
       <SearchBar onSearch={handleSearch} />
       {weather && <WeatherCard data={weather} />}
+      {forecast && <ForecastGraph forecastData={forecast} />}
     </div>
   );
 }
